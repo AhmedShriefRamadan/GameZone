@@ -1,7 +1,15 @@
+using GameZone.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add DB context to DI
+var connectionString = builder.Configuration.GetConnectionString("Default");
+var serverVersion = new MySqlServerVersion(new Version(9, 0, 0));
+builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseMySql(connectionString, serverVersion));
 
 var app = builder.Build();
 
