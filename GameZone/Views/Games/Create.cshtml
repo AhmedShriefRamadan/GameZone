@@ -23,6 +23,7 @@
                 <select class="form-select" asp-for="CategoryId" asp-items="Model.Categories">
                     <option>Select a category</option>
                 </select>
+                <span asp-validation-for="CategoryId"></span>
             </div>
 
             <div>
@@ -30,6 +31,7 @@
                 <select multiple="" class="form-select" asp-for="SelectedDevices" asp-items="Model.Devices">
                     <option>Select supported devices</option>
                 </select>
+                <span asp-validation-for="SelectedDevices"></span>
             </div>
 
             <div>
