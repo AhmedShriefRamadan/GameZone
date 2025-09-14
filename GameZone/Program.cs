@@ -11,6 +11,9 @@ var serverVersion = new MySqlServerVersion(new Version(9, 0, 0));
 builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseMySql(connectionString, serverVersion));
 
+builder.Services.AddScoped<ICategoriesService, CategoriesService>();
+builder.Services.AddScoped<IDevicesService, DevicesService>();
+
 var app = builder.Build();
 
 // Seed DB with Data

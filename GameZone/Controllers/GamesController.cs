@@ -7,11 +7,14 @@ namespace GameZone.Controllers;
 
 public class GamesController : Controller
 {
-    private readonly AppDbContext _Context;
+    private readonly ICategoriesService _categoriesService;
+    private readonly IDevicesService _devicesService;
 
-    public GamesController(AppDbContext context)
+
+    public GamesController(ICategoriesService categoriesService, IDevicesService devicesService)
     {
-        _Context = context;
+        _categoriesService = categoriesService;
+        _devicesService = devicesService;
     }
     public IActionResult Index()
     {
@@ -22,24 +25,24 @@ public class GamesController : Controller
     {
         CreateGameFormViewModel viewModel = new()
         {
-            Categories = _Context.Categories
-                                    .Select(c => new SelectListItem
-                                    {
-                                        Value = c.Id.ToString(),
-                                        Text = c.Name
-                                    })
-                                    .OrderBy(c => c.Text)
-                                    .ToList(),
-            Devices = _Context.Devices
-                                .Select(d => new SelectListItem
-                                {
-                                    Value = d.Id.ToString(),
-                                    Text = d.Name
-                                })
-                                .OrderBy(d => d.Text)
-                                .ToList()
+            Categories = _categoriesService.GetSelectListCategories(),
+            Devices = _devicesService.GetSelectListDevices(),
 
         };
         return View(viewModel);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(CreateGameFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            model.Devices = _devicesService.GetSelectListDevices();
+            model.Categories = _categoriesService.GetSelectListCategories();
+
+            return View(model);
+        }
+        return View();
     }
 }
