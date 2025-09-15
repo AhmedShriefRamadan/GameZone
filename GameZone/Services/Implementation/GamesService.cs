@@ -23,13 +23,14 @@ public class GamesService : IGamesService
 
         using var stream = File.Create(path);
         await model.Cover.CopyToAsync(stream);
-        stream.Dispose();
+        // We dont need it because we use "using"
+        // stream.Dispose();
 
         Game game = new()
         {
             Name = model.Name,
             Description = model.Description,
-            CategoryId = model.CategoryId,
+            CategoryId = model.CategoryId!.Value,
             Cover = coverName,
             GameDevices = [.. model.SelectedDevices.Select(d => new GameDevice { DeviceId = d })],
         };
