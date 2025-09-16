@@ -4,6 +4,7 @@
 
 @{
     ViewData["Title"] = "Add new game";
+    var allowedExtensions = string.Join(", ", FileConfig.Value.AllowedExtensions);
 }
 
 <h5>
@@ -44,8 +45,11 @@
 
             <div>
                 <label asp-for="Cover" class="form-label mt-4"></label>
-                <input type="file" class="form-control" asp-for="Cover">
-                <small class="form-text text-muted">Only @string.Join(", ", FileConfig.Value.AllowedExtensions) files
+                <input type="file" class="form-control" asp-for="Cover"
+                    data-rule-extension="@allowedExtensions.Replace(".", string.Empty)"
+                    data-msg-extension="Only @allowedExtensions files
+                    are allowed.">
+                <small class="form-text text-muted">Only @allowedExtensions files
                     are allowed with max size @(FileConfig.Value.MaxFileSizeInMB)MB.</small>
                 <span asp-validation-for="Cover" class="text-red d-block"></span>
             </div>
@@ -57,7 +61,6 @@
 </form>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/lib/jquery-validation/dist/additional-methods.min.js"></script>
 }
