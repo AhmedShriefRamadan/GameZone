@@ -4,7 +4,8 @@
 
 @{
     ViewData["Title"] = "Add new game";
-    var allowedExtensions = string.Join(", ", FileConfig.Value.AllowedExtensions);
+    var allowedExtensions = string.Join(",", FileConfig.Value.AllowedExtensions);
+    var maxFileSize = FileConfig.Value.MaxFileSizeInMB;
 }
 
 <h5>
@@ -46,11 +47,11 @@
             <div>
                 <label asp-for="Cover" class="form-label mt-4"></label>
                 <input type="file" class="form-control" asp-for="Cover"
-                    data-rule-extension="@allowedExtensions.Replace(".", string.Empty)"
-                    data-msg-extension="Only @allowedExtensions files
-                    are allowed.">
+                    data-rule-extension="@allowedExtensions.Replace(".", string.Empty)" data-msg-extension="Only @allowedExtensions files
+                    are allowed." data-rule-filesize="@FileConfig.Value.MaxFileSizeInBytes"
+                    data-msg-filesize="File size must not exceed @(maxFileSize)MB">
                 <small class="form-text text-muted">Only @allowedExtensions files
-                    are allowed with max size @(FileConfig.Value.MaxFileSizeInMB)MB.</small>
+                    are allowed with max size @(maxFileSize)MB.</small>
                 <span asp-validation-for="Cover" class="text-red d-block"></span>
             </div>
 
@@ -63,4 +64,11 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="~/lib/jquery-validation/dist/additional-methods.min.js"></script>
+    // Custom rule: file size
+    <script>
+        $.validator.addMethod("filesize", function (value, element, param) {
+            var isValid = this.optional(element) || element.files[0].size <= param;
+            return isValid;
+        });
+    </script>
 }
