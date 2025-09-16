@@ -1,8 +1,9 @@
+using GameZone.Attributes;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GameZone.ViewModels;
 
-public class CreateGameFormViewModel
+public class CreateGameFormViewModel()
 {
     [MaxLength(255)]
     public string Name { get; set; } = default!;
@@ -16,5 +17,6 @@ public class CreateGameFormViewModel
     public IEnumerable<SelectListItem>? Devices { get; set; } = default!;
     [MaxLength(2555)]
     public string Description { get; set; } = default!;
+    [AllowedExtensions]
     public IFormFile Cover { get; set; } = default!;
 }
