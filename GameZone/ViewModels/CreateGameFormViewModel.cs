@@ -18,5 +18,6 @@ public class CreateGameFormViewModel()
     [MaxLength(2555)]
     public string Description { get; set; } = default!;
     [AllowedExtensions]
+    [MaxFileSize]
     public IFormFile Cover { get; set; } = default!;
 }
