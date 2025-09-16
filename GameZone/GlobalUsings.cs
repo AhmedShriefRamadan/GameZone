@@ -4,3 +4,4 @@ global using Microsoft.AspNetCore.Mvc.Rendering;
 global using GameZone.Services.Implementation;
 global using GameZone.Services.Interfaces;
 global using GameZone.Data;
+global using GameZone.Configurations;

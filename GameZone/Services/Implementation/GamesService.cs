@@ -1,5 +1,6 @@
 using GameZone.Models;
 using GameZone.ViewModels;
+using Microsoft.Extensions.Options;
 
 namespace GameZone.Services.Implementation;
 
@@ -8,12 +9,16 @@ public class GamesService : IGamesService
     private readonly AppDbContext _context;
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly string _imagesPath;
+    private readonly FileConfiguration _fileConfiguration;
 
-    public GamesService(AppDbContext context, IWebHostEnvironment webHostEnvironment)
+    public GamesService(AppDbContext context,
+                        IWebHostEnvironment webHostEnvironment,
+                        IOptions<FileConfiguration> fileConfiguration)
     {
         _context = context;
         _webHostEnvironment = webHostEnvironment;
-        _imagesPath = $"{_webHostEnvironment.WebRootPath}/assets/images/games";
+        _fileConfiguration = fileConfiguration.Value;
+        _imagesPath = $"{_webHostEnvironment.WebRootPath}{_fileConfiguration.ImagePath}";
     }
     public async Task Create(CreateGameFormViewModel model)
     {

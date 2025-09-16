@@ -1,5 +1,3 @@
-using GameZone.Data;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,6 +12,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<ICategoriesService, CategoriesService>();
 builder.Services.AddScoped<IDevicesService, DevicesService>();
 builder.Services.AddScoped<IGamesService, GamesService>();
+
+// We can AddOptions and validate it with data annotations or even with custom validatione through Validate()
+builder.Services.AddOptions<FileConfiguration>()
+                .Bind(builder.Configuration.GetSection("FileConfiguration"))
+                .ValidateDataAnnotations() // Runs the DataAnnotations validations
+                .ValidateOnStart(); // Fail startup if invalid
+
+// Configure<T> registers the options but doesn't attach validation in one call.
+// builder.Services.Configure<FileConfiguration>(builder.Configuration.GetSection("FileConfiguration"));
 
 var app = builder.Build();
 
