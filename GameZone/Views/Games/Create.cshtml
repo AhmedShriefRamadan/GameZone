@@ -24,16 +24,17 @@
 
             <div>
                 <label asp-for="CategoryId" class="form-label mt-4"></label>
-                <select class="form-select" asp-for="CategoryId" asp-items="Model.Categories">
-                    <option value="">Select a category</option>
+                <select class="form-select" asp-for="CategoryId" asp-items="Model.Categories"
+                    data-placeholder="Select a category" data-minimum-results-for-search="Infinity">
+                    <option value=""></option>
                 </select>
                 <span asp-validation-for="CategoryId" class="text-red"></span>
             </div>
 
             <div>
                 <label asp-for="SelectedDevices" class="form-label mt-4"></label>
-                <select multiple="" class="form-select" asp-for="SelectedDevices" asp-items="Model.Devices">
-                    <option>Select supported devices</option>
+                <select multiple="" class="form-select" asp-for="SelectedDevices" asp-items="Model.Devices" data-placeholder="Select supported devices">
+                    <option></option>
                 </select>
                 <span asp-validation-for="SelectedDevices" class="text-red"></span>
             </div>
