@@ -5,4 +5,5 @@ namespace GameZone.Services.Interfaces;
 public interface IGamesService
 {
     public Task Create(CreateGameFormViewModel model);
+    public Task<IEnumerable<Game>> GetAll();
 }

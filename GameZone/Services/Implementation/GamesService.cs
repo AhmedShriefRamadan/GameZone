@@ -43,4 +43,14 @@ public class GamesService : IGamesService
         await _context.AddAsync(game);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<IEnumerable<Game>> GetAll()
+    {
+        return await _context.Games
+                    .Include(g => g.Category)
+                    .Include(g => g.GameDevices)
+                    .ThenInclude(d => d.Device)
+                    .AsNoTracking()
+                    .ToListAsync();
+    }
 }
