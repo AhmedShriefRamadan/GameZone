@@ -25,6 +25,16 @@ public class GamesController : Controller
         return View(games);
     }
 
+    public async Task<IActionResult> Details(int id)
+    {
+        var game = await _gamesService.GetById(id);
+
+        if (game == null)
+            return NotFound();
+
+        return View(game);
+    }
+
     public IActionResult Create()
     {
         CreateGameFormViewModel viewModel = new()

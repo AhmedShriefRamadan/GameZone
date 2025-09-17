@@ -5,4 +5,5 @@ global using GameZone.Services.Implementation;
 global using GameZone.Services.Interfaces;
 global using GameZone.Data;
 global using GameZone.Models;
+global using Microsoft.Extensions.Options;
 global using GameZone.Configurations;

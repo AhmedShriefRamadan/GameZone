@@ -53,4 +53,14 @@ public class GamesService : IGamesService
                     .AsNoTracking()
                     .ToListAsync();
     }
+
+    public async Task<Game?> GetById(int id)
+    {
+        return await _context.Games
+                    .Include(g => g.Category)
+                    .Include(g => g.GameDevices)
+                    .ThenInclude(d => d.Device)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(g => g.Id == id);
+    }
 }
