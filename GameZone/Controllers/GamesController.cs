@@ -19,9 +19,10 @@ public class GamesController : Controller
         _devicesService = devicesService;
         _gamesService = gamesService;
     }
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var games = await _gamesService.GetAll();
+        return View(games);
     }
 
     public IActionResult Create()
