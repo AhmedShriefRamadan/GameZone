@@ -50,6 +50,10 @@ body {
   object-fit: contain !important;
 }
 
+.swal2-icon-content {
+  color: darkorange;
+}
+
 /* End Custom Styles */
 
 
