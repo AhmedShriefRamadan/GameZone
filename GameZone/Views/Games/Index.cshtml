@@ -6,6 +6,11 @@
     ViewData["Title"] = "Games";
 }
 
+<a class="btn btn-secondary btn-lg mb-3" asp-action="Create">
+    <i class="bi bi-plus-circle-dotted"></i>
+    Add Game
+</a>
+
 @if (!Model.Any())
 {
     <div class="alert alert-dismissible alert-warning">
@@ -33,7 +38,7 @@ else
                             <a class="btn rounded rounded-3 me-2" asp-action="Update" asp-route-id="@game.Id">
                                 <i class="bi bi-pencil-fill"></i>
                             </a>
-                            <a href="#" class="btn rounded rounded-3 me-2">
+                            <a class="btn rounded rounded-3 me-2 delete-game" data-id="@game.Id">
                                 <i class="bi bi-trash-fill fs-2 text-red"></i>
                             </a>
                         </div>
@@ -42,4 +47,8 @@ else
             }
         </tbody>
     </table>
+}
+
+@section Scripts {
+    <script src="/js/game-delete.js"></script>
 }
