@@ -8,4 +8,5 @@ public interface IGamesService
     public Task<Game?> GetById(int id);
     public Task<IEnumerable<Game>> GetAll();
     public Task<Game?> Update(UpdateGameFormViewModel model);
+    public Task<bool> Delete(int id);
 }

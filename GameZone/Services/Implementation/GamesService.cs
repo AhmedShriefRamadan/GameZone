@@ -105,6 +105,26 @@ public class GamesService : IGamesService
         }
     }
 
+    public async Task<bool> Delete(int id)
+    {
+        bool isDeleted = false;
+
+        var game = await _context.Games.SingleOrDefaultAsync(g => g.Id == id);
+        if (game == null)
+            return isDeleted;
+
+        _context.Remove(game);
+        int effectedRows = await _context.SaveChangesAsync();
+        if (effectedRows > 0)
+        {
+            isDeleted = true;
+            var cover = Path.Combine(_imagesPath, game.Cover);
+            File.Delete(cover);
+        }
+
+        return isDeleted;
+    }
+
     private async Task<string> SaveCover(IFormFile cover)
     {
         var coverName = $"{Guid.NewGuid()}{Path.GetExtension(cover.FileName)}";

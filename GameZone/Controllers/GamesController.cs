@@ -104,4 +104,14 @@ public class GamesController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpDelete]
+    public async Task<IActionResult> Delete(int id)
+    {
+        bool isDeleted = await _gamesService.Delete(id);
+
+        if (!isDeleted)
+            return BadRequest();
+        return Ok();
+    }
 }
