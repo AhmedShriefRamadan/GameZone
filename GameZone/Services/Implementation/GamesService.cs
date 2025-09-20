@@ -22,14 +22,7 @@ public class GamesService : IGamesService
     }
     public async Task Create(CreateGameFormViewModel model)
     {
-        var coverName = $"{Guid.NewGuid()}{Path.GetExtension(model.Cover.FileName)}";
-
-        var path = Path.Combine(_imagesPath, coverName);
-
-        using var stream = File.Create(path);
-        await model.Cover.CopyToAsync(stream);
-        // We dont need it because we use "using"
-        // stream.Dispose();
+        var coverName = await SaveCover(model.Cover);
 
         Game game = new()
         {
@@ -62,5 +55,67 @@ public class GamesService : IGamesService
                     .ThenInclude(d => d.Device)
                     .AsNoTracking()
                     .SingleOrDefaultAsync(g => g.Id == id);
+    }
+
+    public async Task<Game?> Update(UpdateGameFormViewModel model)
+    {
+        var game = await _context.Games
+                                    .Include(g => g.GameDevices)
+                                    .SingleOrDefaultAsync(g => g.Id == model.Id);
+
+        if (game == null)
+            return null;
+
+        bool hasNewCover = model.Cover != null;
+        var oldCover = game.Cover;
+        string newCover = string.Empty;
+
+        game.Name = model.Name;
+        game.Description = model.Description;
+        game.CategoryId = model.CategoryId!.Value;
+        game.GameDevices = model
+                            .SelectedDevices
+                            .Select(d => new GameDevice { DeviceId = d }).ToList();
+
+        if (hasNewCover)
+        {
+            newCover = await SaveCover(model.Cover!);
+            game.Cover = newCover;
+        }
+
+        var effectedRows = await _context.SaveChangesAsync();
+        if (effectedRows > 0)
+        {
+            if (hasNewCover)
+            {
+                var cover = Path.Combine(_imagesPath, oldCover);
+                File.Delete(cover);
+            }
+
+            return game;
+        }
+        else
+        {
+            if (newCover != string.Empty)
+            {
+                var cover = Path.Combine(_imagesPath, newCover);
+                File.Delete(cover);
+            }
+            return null;
+        }
+    }
+
+    private async Task<string> SaveCover(IFormFile cover)
+    {
+        var coverName = $"{Guid.NewGuid()}{Path.GetExtension(cover.FileName)}";
+
+        var path = Path.Combine(_imagesPath, coverName);
+
+        using var stream = File.Create(path);
+        await cover.CopyToAsync(stream);
+        // We dont need it because we use "using"
+        // stream.Dispose();
+
+        return coverName;
     }
 }

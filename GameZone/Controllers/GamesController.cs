@@ -62,4 +62,46 @@ public class GamesController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    public async Task<IActionResult> Update(int id)
+    {
+        var game = await _gamesService.GetById(id);
+
+        if (game == null)
+            return NotFound();
+
+        UpdateGameFormViewModel viewModel = new()
+        {
+            Id = game.Id,
+            Name = game.Name,
+            Description = game.Description,
+            CategoryId = game.CategoryId,
+            SelectedDevices = game.GameDevices.Select(d => d.DeviceId).ToList(),
+            Categories = _categoriesService.GetSelectListCategories(),
+            Devices = _devicesService.GetSelectListDevices(),
+            CurrentCover = game.Cover
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Update(UpdateGameFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            model.Devices = _devicesService.GetSelectListDevices();
+            model.Categories = _categoriesService.GetSelectListCategories();
+
+            return View(model);
+        }
+
+        var game = await _gamesService.Update(model);
+
+        if (game == null)
+            return BadRequest();
+
+        return RedirectToAction(nameof(Index));
+    }
 }

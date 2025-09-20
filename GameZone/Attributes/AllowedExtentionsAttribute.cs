@@ -8,22 +8,19 @@ public class AllowedExtensionsAttribute : ValidationAttribute
     {
         var file = value as IFormFile;
 
-        if (file == null)
-        {
-            return new ValidationResult("The file is empty.");
-        }
+        if (file != null)
+        {// Resolve FileConfiguration from DI
+            var options = (IOptions<FileConfiguration>)validationContext
+                                    .GetRequiredService(typeof(IOptions<FileConfiguration>));
+            var allowedExtensions = options.Value.AllowedExtensions;
 
-        // Resolve FileConfiguration from DI
-        var options = (IOptions<FileConfiguration>)validationContext
-                                .GetRequiredService(typeof(IOptions<FileConfiguration>));
-        var allowedExtensions = options.Value.AllowedExtensions;
+            var extension = Path.GetExtension(file.FileName);
 
-        var extension = Path.GetExtension(file.FileName);
-
-        var isAllowed = allowedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase);
-        if (!isAllowed)
-        {
-            return new ValidationResult($"Only {string.Join(", ", allowedExtensions)} files are allowed.");
+            var isAllowed = allowedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase);
+            if (!isAllowed)
+            {
+                return new ValidationResult($"Only {string.Join(", ", allowedExtensions)} files are allowed.");
+            }
         }
 
         return ValidationResult.Success;
